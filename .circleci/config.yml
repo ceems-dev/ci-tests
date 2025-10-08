@@ -13,11 +13,12 @@ jobs:
       - run: uname -a
       # Fix for https://github.com/golang/go/issues/75031#issuecomment-3195256688
       # - run: go env -w GOTOOLCHAIN=go1.25.0+auto
-      - run: git clone https://github.com/ceems-dev/ceems.git
-      - run: cd ceems
-      - run: GOARCH=1 make clang
-      - run: make
-      - run: CGO_APPS=1 make
+      - run: |
+          git clone https://github.com/ceems-dev/ceems.git
+          cd ceems
+          GOARCH=1 make clang
+          make
+          CGO_APPS=1 make
 
 workflows:
   version: 2
