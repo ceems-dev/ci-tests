@@ -23,7 +23,7 @@ jobs:
   test-go-orb:
     executor:
       name: go/default
-      tag: 1.25
+      tag: "1.25"
       machine:
         image: ubuntu-2404:current
       resource_class: arm.medium
