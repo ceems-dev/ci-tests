@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  go: circleci/go@3.0.3
 executors:
   arm:
     machine:
@@ -9,22 +11,41 @@ jobs:
   test-arm:
     executor: arm
     steps:
-      - run: go env
       - run: uname -a
-      # Fix for https://github.com/golang/go/issues/75031#issuecomment-3195256688
-      # - run: go env -w GOTOOLCHAIN=go1.25.0+auto
-      - run: |
-          git clone https://github.com/ceems-dev/ceems.git
-          cd ceems
-          GOARCH=1 make clang
-          make
-          CGO_APPS=1 make
+      - run: go env
+      - run: go build -o main
+  test-arm1:
+    executor: arm
+    steps:
+      - run: uname -a
+      - run: sudo go env
+      - run: go build -o main
+  test-go-orb:
+    executor:
+      name: go/default
+      tag: 1.25
+      machine:
+        image: ubuntu-2404:current
+      resource_class: arm.medium
+    steps:
+      - run: uname -a
+      - run: go env
+      - run: go build -o main
 
 workflows:
-  version: 2
   ceems:
     jobs:
       - test-arm:
+          filters:
+            tags:
+              only: /.*/
+      
+      - test-arm1:
+          filters:
+            tags:
+              only: /.*/
+      
+      - test-go-orb:
           filters:
             tags:
               only: /.*/
