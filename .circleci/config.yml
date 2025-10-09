@@ -9,14 +9,16 @@ jobs:
   test-arm:
     executor: arm
     steps:
+      - checkout
       - run: uname -a
       - run: go env
       - run: go build -o main
   test-arm1:
     executor: arm
     steps:
+      - checkout
       - run: uname -a
-      - run: sudo go env
+      - run: sudo /usr/local/go/bin/go env
       - run: go build -o main
 
 workflows:
