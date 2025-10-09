@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  go: circleci/go@3.0.3
 executors:
   arm:
     machine:
@@ -20,17 +18,6 @@ jobs:
       - run: uname -a
       - run: sudo go env
       - run: go build -o main
-  test-go-orb:
-    executor:
-      name: go/default
-      tag: "1.25"
-      machine:
-        image: ubuntu-2404:current
-      resource_class: arm.medium
-    steps:
-      - run: uname -a
-      - run: go env
-      - run: go build -o main
 
 workflows:
   ceems:
@@ -41,11 +28,6 @@ workflows:
               only: /.*/
       
       - test-arm1:
-          filters:
-            tags:
-              only: /.*/
-      
-      - test-go-orb:
           filters:
             tags:
               only: /.*/
