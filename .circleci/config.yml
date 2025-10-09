@@ -18,7 +18,10 @@ jobs:
     steps:
       - checkout
       - run: uname -a
-      - run: sudo /usr/local/go/bin/go env
+      - run: |
+          wget -O /tmp/go1.25.2.linux-arm64.tar.gz https://go.dev/dl/go1.25.2.linux-arm64.tar.gz
+          sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf /tmp/go1.25.2.linux-arm64.tar.gz
+      - run: go env
       - run: go build -o main
 
 workflows:
