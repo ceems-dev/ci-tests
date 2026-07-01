@@ -1,0 +1,48 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Fetch current PR labels
+        id: fetch-labels
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const eventName = context.eventName;
+            let labels = new Array();
+            // For schedule jobs, add all roles to tests by fetching all possible labels
+            const allLabels = await github.paginate(
+              github.rest.issues.listLabelsForRepo,
+              { owner, repo }
+            );
+
+            core.info(allLabels);
+
+            for (const label of allLabels) {
+              if (label.name.startsWith("roles/")) {
+                labels.push(label.name);
+              }
+            }
+            core.info(labels);
+            const names = labels.map(l => l.name);
+            core.info(names);
+            core.info(`Current labels: ${names.join(', ') || '(none)'}`);
+            core.setOutput('names', JSON.stringify(names));
