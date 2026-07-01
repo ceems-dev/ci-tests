@@ -34,9 +34,8 @@ jobs:
               { owner, repo }
             );
 
-            core.info(allLabels);
-
             for (const label of allLabels) {
+              core.info(label.name);
               if (label.name.startsWith("roles/")) {
                 labels.push(label.name);
               }
