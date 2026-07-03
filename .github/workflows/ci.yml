@@ -46,32 +46,6 @@ jobs:
             core.info(`Current labels: ${names.join(', ') || '(none)'}`);
             core.setOutput('names', JSON.stringify(names));
 
-      - name: Discord notification
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: |
-          if [ "${{ steps.fetch-labels.outcome }}" == "success" ]; then
-            COLOR=5763719
-            STATUS="Success"
-            EMOJI=":white_check_mark:"
-          else
-            COLOR=15548997
-            STATUS="Failed"
-            EMOJI=":x:"
-          fi
-          
-          curl -H "Content-Type: application/json" \
-               -d "{
-                 \"embeds\": [{
-                   \"title\": \"$EMOJI Update Python Offsets Scheduled Pipeline - $STATUS\",
-                   \"description\": \"Updating Python offsets for ebpf package in \`${{ github.repository }}\`\",
-                   \"color\": $COLOR,
-                   \"fields\": [
-                     {\"name\": \"Branch\", \"value\": \"\`${{ github.ref_name }}\`\", \"inline\": true},
-                     {\"name\": \"Commit\", \"value\": \"\`${{ github.sha }}\`\", \"inline\": true},
-                     {\"name\": \"Author\", \"value\": \"${{ github.actor }}\", \"inline\": true}
-                   ],
-                   \"url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
-                 }]
+    
                }" \
                $DISCORD_WEBHOOK
